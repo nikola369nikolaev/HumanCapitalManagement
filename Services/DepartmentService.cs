@@ -19,5 +19,10 @@ namespace HumanCapitalManagement.Services
 
             return result;
         }
+
+        public Task<Department> GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
