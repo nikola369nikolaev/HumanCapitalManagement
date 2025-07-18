@@ -1,14 +1,18 @@
+using System.Security.Claims;
+using HumanCapitalManagement.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
 using HumanCapitalManagement.Services;
 using HumanCapitalManagement.Models.InputModels;
+using HumanCapitalManagement.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace HumanCapitalManagement.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly IEmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService; //dependency injection
         private readonly IDepartmentService _departmentService;
 
         public EmployeesController(IEmployeeService employeeService, IDepartmentService departmentService)
@@ -17,30 +21,64 @@ namespace HumanCapitalManagement.Controllers
             _departmentService = departmentService;
         }
 
+        [Authorize(Roles = $"HR ADMIN, MANAGER, {nameof(RoleType.EMPLOYEE)}")]
         public async Task<IActionResult> Index()
         {
+            var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var user = await _employeeService.GetByEmail(email);
+
             var employees = await _employeeService.GetAll();
+            if (User.IsInRole("MANAGER"))
+            {
+                employees = employees.Where(x => x.DepartmentId == user.DepartmentId);
+            }
+
+            if (User.IsInRole("EMPLOYEE"))
+            {
+                employees = employees.Where(x => x.Email == email);
+            }
 
             return View(employees);
         }
 
+        [Authorize(Roles = "HR ADMIN, MANAGER, EMPLOYEE")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null || !id.HasValue)
             {
                 return BadRequest();
             }
+            
+            var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var user = await _employeeService.GetByEmail(email);
 
+            if (User.IsInRole("EMPLOYEE"))
+            {
+                if (id != user.Id)
+                {
+                    return Unauthorized();
+                }
+            }
+            
             var employee = await _employeeService.GetById(id.Value);
-        
+            
             if (employee == null)
             {
                 return NotFound();
+            }
+            
+            if (User.IsInRole("MANAGER"))
+            {
+                if (employee.DepartmentId != user.DepartmentId)
+                {
+                    return Unauthorized();
+                }
             }
 
             return View(employee);
         }
 
+        [Authorize(Roles = "HR ADMIN")]
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.GetAll();
@@ -52,6 +90,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR ADMIN")]
         public async Task<IActionResult> Create(CreateEmployeeInput employeeInput)
         {
             if (!ModelState.IsValid)
@@ -68,6 +107,7 @@ namespace HumanCapitalManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "HR ADMIN, MANAGER")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null || !id.HasValue)
@@ -79,6 +119,17 @@ namespace HumanCapitalManagement.Controllers
             if (employee == null)
             {
                 return NotFound();
+            }
+            
+            var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var user = await _employeeService.GetByEmail(email);
+            
+            if (User.IsInRole("MANAGER"))
+            {
+                if (employee.DepartmentId != user.DepartmentId)
+                {
+                    return Unauthorized();
+                }
             }
 
             var departments = await _departmentService.GetAll();
@@ -100,6 +151,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR ADMIN,MANAGER")]
         public async Task<IActionResult> Edit(UpdateEmployeeInput employeeInput)
         {
             if (!ModelState.IsValid)
@@ -109,12 +161,24 @@ namespace HumanCapitalManagement.Controllers
 
                 return View(employeeInput);
             }
+            
+            var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+            var user = await _employeeService.GetByEmail(email);
+            
+            if (User.IsInRole("MANAGER"))
+            {
+                if (employeeInput.DepartmentId != user.DepartmentId)
+                {
+                    return Unauthorized();
+                }
+            }
 
             await _employeeService.UpdateEmployee(employeeInput);
 
             return RedirectToAction(nameof(Index));
         }
-
+        
+        [Authorize(Roles = "HR ADMIN")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null || !id.HasValue)
@@ -133,6 +197,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR ADMIN")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _employeeService.DeleteEmployee(id);

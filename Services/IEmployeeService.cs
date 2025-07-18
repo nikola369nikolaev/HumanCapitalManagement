@@ -1,6 +1,6 @@
-﻿using HumanCapitalManagement.Models.InputModels;
-
-using DataEmployee = HumanCapitalManagement.Data.Models.Employee;
+﻿using HumanCapitalManagement.Data.Models;
+using HumanCapitalManagement.Models.InputModels;
+using HumanCapitalManagement.Models.ViewModels;
 
 namespace HumanCapitalManagement.Services
 {
@@ -8,9 +8,11 @@ namespace HumanCapitalManagement.Services
     {
         Task CreateEmployee(CreateEmployeeInput employeeInput);
 
-        Task<IEnumerable<DataEmployee>> GetAll();
+        Task<IEnumerable<EmployeeViewModel>> GetAll();
 
-        Task<DataEmployee?> GetById(int id);
+        Task<Employee?> GetById(int id);
+        
+        Task<Employee?> GetByEmail(string email);
 
         Task UpdateEmployee(UpdateEmployeeInput employeeInput);
 

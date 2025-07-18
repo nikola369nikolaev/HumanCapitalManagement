@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HumanCapitalManagement.Data;
+using HumanCapitalManagement.Data.Models;
 using HumanCapitalManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +20,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>() //to work with roles
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -48,5 +53,126 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync(); //automatic run
+
+    string[] roles = { nameof(RoleType.EMPLOYEE), "MANAGER", "HR ADMIN" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+    
+    if (!dbContext.Departments.Any(x=>x.Name == "IT"))
+    {
+        dbContext.Departments.Add(new Department() { Name = "IT" });
+    }
+
+    if (!dbContext.Departments.Any(x => x.Name == "Finance"))
+    {
+        dbContext.Departments.Add(new Department() { Name = "Finance" });
+    }
+
+    if (!dbContext.Departments.Any(x => x.Name == "HR"))
+    {
+        dbContext.Departments.Add(new Department() { Name = "HR" });
+    }
+
+    await dbContext.SaveChangesAsync();
+    
+    var adminEmail = "hr.admin@example.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser != null && !(await userManager.IsInRoleAsync(adminUser, "HR ADMIN")))
+    {
+        await userManager.AddToRoleAsync(adminUser, "HR ADMIN");
+    }
+    else
+    {
+        var result = await userManager.CreateAsync(new IdentityUser
+        {
+            UserName = adminEmail,
+            NormalizedUserName = "admin",
+            Email = adminEmail,
+            NormalizedEmail = adminEmail,
+            EmailConfirmed = true
+        }, "Hr.admin123!");
+        if (result.Succeeded)
+        {
+            adminUser = await userManager.FindByEmailAsync(adminEmail);
+            await userManager.AddToRoleAsync(adminUser, "HR ADMIN");
+            
+            var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "HR");
+            dbContext.Employees.Add(new Employee
+            {
+                FirstName = "admin",
+                LastName = "admin",
+                Email = adminEmail,
+                JobTitle = "admin",
+                Salary = 0,
+                DepartmentId = department.Id
+            });
+            await dbContext.SaveChangesAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error creating admin user");
+            Console.WriteLine(result.ToString());
+        }
+    }
+    
+    var managerEmail = "manager@example.com";
+    var managerUser = await userManager.FindByEmailAsync(managerEmail);
+
+    if (managerUser != null && !(await userManager.IsInRoleAsync(managerUser, "MANAGER")))
+    {
+        await userManager.AddToRoleAsync(managerUser, "MANAGER");
+    }
+    else
+    {
+        var result = await userManager.CreateAsync(new IdentityUser
+        {
+            UserName = managerEmail,
+            NormalizedUserName = "manager",
+            Email = managerEmail,
+            NormalizedEmail = managerEmail,
+            EmailConfirmed = true
+        }, "Manager123!");
+        if (result.Succeeded)
+        {
+            managerUser = await userManager.FindByEmailAsync(managerEmail);
+            await userManager.AddToRoleAsync(managerUser, "MANAGER");
+            var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "IT");
+            dbContext.Employees.Add(new Employee
+            {
+                FirstName = "manager",
+                LastName = "manager",
+                Email = managerEmail,
+                JobTitle = "manager",
+                Salary = 0,
+                DepartmentId = department.Id
+            });
+            await dbContext.SaveChangesAsync();
+        }
+        else
+        {
+            Console.WriteLine("Error creating manager user");
+            Console.WriteLine(result.ToString());
+        }
+    }
+    
+    
+}
 
 app.Run();
