@@ -96,7 +96,7 @@ The application uses **Entity Framework Core** with **SQL Server** for data pers
 ### Database Context  
 The main DbContext is defined in:  
 /HumanCapitalManagement/Data/ApplicationDbContext.cs  
-'''
+```bash
 
 It includes the following DbSets:
 - `ApplicationUser` – extends `IdentityUser` for custom user data
@@ -109,7 +109,7 @@ Configured in `appsettings.json`:
 "ConnectionStrings": {
   "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=HumanCapitalManagementDb;Trusted_Connection=True;"
 }
-'''
+```
 
 ## Docker Support
 
