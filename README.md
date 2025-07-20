@@ -55,7 +55,8 @@ Roles are seeded at startup and assigned manually (or via admin logic).
 
 ---
 
-## 📁 Project Structure```
+## 📁 Project Structure
+```
 HumanCapitalManagement/
 │
 ├── Controllers/ # Interfaces and domain logic
