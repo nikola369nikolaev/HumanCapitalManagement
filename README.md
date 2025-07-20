@@ -134,8 +134,8 @@ HumanCapitalManagement.Tests/
 │ └── AccountTests.cs               # Tests for user registration and login  
 ├── Services/  
 │ └── DepartmentServiceTests.cs  
-│ └── AccountServiceTests.cs        # Tests for service-layer logic 
-│ └── EmployeeServiceTests.cs
+│ └── AccountServiceTests.cs        # Tests for service-layer logic  
+│ └── EmployeeServiceTests.cs  
 ├── Validation/                     # Tests for model validation  
 │ └── InputModelValidationTests.cs  
 
