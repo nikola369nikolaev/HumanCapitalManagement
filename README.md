@@ -89,6 +89,28 @@ dotnet run
 
 ```
 
+## Database & Migrations
+
+The application uses **Entity Framework Core** with **SQL Server** for data persistence.
+
+### Database Context  
+The main DbContext is defined in:  
+/HumanCapitalManagement/Data/ApplicationDbContext.cs  
+'''
+
+It includes the following DbSets:
+- `ApplicationUser` – extends `IdentityUser` for custom user data
+- `Employee` – represents employee records
+- `Department` – represents company departments
+
+### ⚙️ Connection String
+Configured in `appsettings.json`:
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=HumanCapitalManagementDb;Trusted_Connection=True;"
+}
+'''
+
 ## Docker Support
 
 ```bash
