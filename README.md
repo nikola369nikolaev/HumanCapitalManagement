@@ -136,18 +136,15 @@ HumanCapitalManagement.Tests/
 │ └── DepartmentServiceTests.cs  
 │ └── AccountServiceTests.cs        # Tests for service-layer logic 
 │ └── EmployeeServiceTests.cs
-├── Validation/                     # Tests for model validation
-│   └── InputModelValidationTests.cs
+├── Validation/                     # Tests for model validation  
+│ └── InputModelValidationTests.cs  
 
-```bash
+The tests are written using **xUnit** and **Moq**, and executed with an **in-memory SQLite database** to simulate real  
+interactions without requiring a full database server.  
 
-The tests are written using **xUnit** and **Moq**, and executed with an **in-memory SQLite database** to simulate real interactions without requiring a full database server.
-
-- Account registration & login
-- Input model validation logic
-- Service-level functionality
-
-```
+- Account registration & login  
+- Input model validation logic  
+- Service-level functionality  
 
 ## Notes
 
