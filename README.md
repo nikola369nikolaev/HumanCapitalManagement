@@ -70,7 +70,7 @@ HumanCapitalManagement.Tests/
 ├── # Unit tests
 ```
 
-## 📁 Getting Started
+## Getting Started
 
 ```bash
 
@@ -86,3 +86,18 @@ dotnet ef database update
 
 # Run the app
 dotnet run
+
+## Docker Support
+
+```bash
+
+# Build the Docker image
+docker build -t human-capital-management .
+
+# Run the container
+docker run -d -p 5140:80 human-capital-management
+
+## Notes
+
+Login/Register UI is integrated into the layout (_LoginPartial.cshtml)
+Links to /Employees and /Departments are visible only to logged-in users
