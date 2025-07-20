@@ -87,6 +87,8 @@ dotnet ef database update
 # Run the app
 dotnet run
 
+```
+
 ## Docker Support
 
 ```bash
@@ -96,6 +98,8 @@ docker build -t human-capital-management .
 
 # Run the container
 docker run -d -p 5140:80 human-capital-management
+
+```
 
 ## Notes
 
