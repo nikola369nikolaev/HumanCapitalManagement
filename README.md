@@ -123,6 +123,32 @@ docker run -d -p 5140:80 human-capital-management
 
 ```
 
+## Testing
+
+The project includes unit tests that validate authentication and role-based authorization functionality.  
+
+### Test Structure
+
+HumanCapitalManagement.Tests/  
+├── Accounts/  
+│ └── AccountTests.cs               # Tests for user registration and login  
+├── Services/  
+│ └── DepartmentServiceTests.cs  
+│ └── AccountServiceTests.cs        # Tests for service-layer logic 
+│ └── EmployeeServiceTests.cs
+├── Validation/                     # Tests for model validation
+│   └── InputModelValidationTests.cs
+
+```bash
+
+### Account Tests
+
+Located in `Accounts/AccountTests.cs`, these tests cover:
+- User registration with `UserManager`
+- User login via `SignInManager`
+
+```
+
 ## Notes
 
 Login/Register UI is integrated into the **layout** (_LoginPartial.cshtml)  
