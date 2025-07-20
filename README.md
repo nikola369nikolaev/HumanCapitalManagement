@@ -1,5 +1,3 @@
-# HumanCapitalManagement
-
 # Human Capital Management App
 
 A web application for managing human capital in an organization – includes user authentication, role-based access, employee and department management.
