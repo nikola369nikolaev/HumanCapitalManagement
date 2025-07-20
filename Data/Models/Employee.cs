@@ -26,8 +26,7 @@ public class Employee
     [Required]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Salary { get; set; }
-
-    // Foreign Key
+    
     [Required]
     public int DepartmentId { get; set; }
 

@@ -10,8 +10,7 @@ namespace HumanCapitalManagement.Data.Models
         [Required(ErrorMessage = "Department name is required")]
         [StringLength(100)]
         public string Name { get; set; }
-
-        // Навигационно свойство към служителите
+        
         public ICollection<Employee> Employees { get; set; }
     }
 }

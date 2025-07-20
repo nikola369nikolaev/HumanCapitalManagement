@@ -23,7 +23,6 @@ namespace HumanCapitalManagement.Models.InputModels
         [Required]
         public decimal Salary { get; set; }
 
-        // Foreign Key
         [Required]
         public int DepartmentId { get; set; }
     }
