@@ -68,3 +68,18 @@ HumanCapitalManagement/
 HumanCapitalManagement.Tests/
 ├── # Unit tests
 ```
+## 📁 Getting started
+```bash
+
+# Clone the repository
+git clone https://github.com/nikola369nikolaev/human-capital-management.git
+cd human-capital-management
+
+# Restore dependencies
+dotnet restore
+
+# Apply database migrations
+dotnet ef database update
+
+# Run the app
+dotnet run
