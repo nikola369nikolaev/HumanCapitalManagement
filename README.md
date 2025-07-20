@@ -54,6 +54,7 @@ Roles are seeded at startup and assigned manually (or via admin logic).
 ---
 
 ## 📁 Project Structure
+
 ```
 HumanCapitalManagement/
 │
@@ -69,7 +70,8 @@ HumanCapitalManagement.Tests/
 ├── # Unit tests
 ```
 
-## 📁 Getting started
+## 📁 Getting Started
+
 ```bash
 
 # Clone the repository
