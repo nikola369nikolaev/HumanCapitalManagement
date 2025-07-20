@@ -125,7 +125,7 @@ docker run -d -p 5140:80 human-capital-management
 
 ## Testing
 
-The project includes unit tests that validate authentication and role-based authorization functionality.  
+Unit tests are located in the `HumanCapitalManagement.Tests/` project.
 
 ### Test Structure
 
@@ -141,11 +141,11 @@ HumanCapitalManagement.Tests/
 
 ```bash
 
-### Account Tests
+The tests are written using **xUnit** and **Moq**, and executed with an **in-memory SQLite database** to simulate real interactions without requiring a full database server.
 
-Located in `Accounts/AccountTests.cs`, these tests cover:
-- User registration with `UserManager`
-- User login via `SignInManager`
+- Account registration & login
+- Input model validation logic
+- Service-level functionality
 
 ```
 
