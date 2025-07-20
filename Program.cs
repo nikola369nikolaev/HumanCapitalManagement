@@ -64,7 +64,7 @@ using (var scope = app.Services.CreateScope())
     ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.MigrateAsync(); //automatic run
 
-    string[] roles = { nameof(RoleType.EMPLOYEE), "MANAGER", "HR ADMIN" };
+    string[] roles = { nameof(RoleType.EMPLOYEE), $"{nameof(RoleType.MANAGER)}", $"{nameof(RoleType.HR_ADMIN)}" };
 
     foreach (var role in roles)
     {
@@ -94,9 +94,9 @@ using (var scope = app.Services.CreateScope())
     var adminEmail = "hr.admin@example.com";
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
-    if (adminUser != null && !(await userManager.IsInRoleAsync(adminUser, "HR ADMIN")))
+    if (adminUser != null && !(await userManager.IsInRoleAsync(adminUser, $"{nameof(RoleType.HR_ADMIN)}")))
     {
-        await userManager.AddToRoleAsync(adminUser, "HR ADMIN");
+        await userManager.AddToRoleAsync(adminUser, $"{nameof(RoleType.HR_ADMIN)}");
     }
     else
     {
@@ -111,7 +111,7 @@ using (var scope = app.Services.CreateScope())
         if (result.Succeeded)
         {
             adminUser = await userManager.FindByEmailAsync(adminEmail);
-            await userManager.AddToRoleAsync(adminUser, "HR ADMIN");
+            await userManager.AddToRoleAsync(adminUser, $"{nameof(RoleType.HR_ADMIN)}");
             
             var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "HR");
             dbContext.Employees.Add(new Employee
@@ -135,9 +135,9 @@ using (var scope = app.Services.CreateScope())
     var managerEmail = "manager@example.com";
     var managerUser = await userManager.FindByEmailAsync(managerEmail);
 
-    if (managerUser != null && !(await userManager.IsInRoleAsync(managerUser, "MANAGER")))
+    if (managerUser != null && !(await userManager.IsInRoleAsync(managerUser, $"{nameof(RoleType.MANAGER)}")))
     {
-        await userManager.AddToRoleAsync(managerUser, "MANAGER");
+        await userManager.AddToRoleAsync(managerUser, $"{nameof(RoleType.MANAGER)}");
     }
     else
     {
@@ -152,7 +152,7 @@ using (var scope = app.Services.CreateScope())
         if (result.Succeeded)
         {
             managerUser = await userManager.FindByEmailAsync(managerEmail);
-            await userManager.AddToRoleAsync(managerUser, "MANAGER");
+            await userManager.AddToRoleAsync(managerUser, $"{nameof(RoleType.MANAGER)}");
             var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "IT");
             dbContext.Employees.Add(new Employee
             {

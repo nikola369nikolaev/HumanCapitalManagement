@@ -11,13 +11,11 @@ namespace HumanCapitalManagement.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public EmployeeService(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public EmployeeService(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         public async Task CreateEmployee(CreateEmployeeInput employeeInput)
@@ -47,7 +45,7 @@ namespace HumanCapitalManagement.Services
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(employeeInput.Email);
-                await _userManager.AddToRoleAsync(user, "EMPLOYEE");
+                await _userManager.AddToRoleAsync(user, $"{nameof(RoleType.EMPLOYEE)}");
             }
         }
 
@@ -86,7 +84,9 @@ namespace HumanCapitalManagement.Services
                     Salary = x.Salary,
                     DepartmentName = x.Department.Name,
                     DepartmentId = x.DepartmentId,
-                    Role = string.Join(", ", roles)
+                    Role = Enum.TryParse<RoleType>(roles.FirstOrDefault(), out var roleParsed)
+                        ? roleParsed
+                        : RoleType.EMPLOYEE
                 };
             }).Select(x => x.Result);
             

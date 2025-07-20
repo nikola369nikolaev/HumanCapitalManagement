@@ -12,7 +12,7 @@ namespace HumanCapitalManagement.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly IEmployeeService _employeeService; //dependency injection
+        private readonly IEmployeeService _employeeService; 
         private readonly IDepartmentService _departmentService;
 
         public EmployeesController(IEmployeeService employeeService, IDepartmentService departmentService)
@@ -21,27 +21,27 @@ namespace HumanCapitalManagement.Controllers
             _departmentService = departmentService;
         }
 
-        [Authorize(Roles = $"HR ADMIN, MANAGER, {nameof(RoleType.EMPLOYEE)}")]
+        [Authorize(Roles = $"{nameof(RoleType.EMPLOYEE)}, {nameof(RoleType.MANAGER)}, {nameof(RoleType.HR_ADMIN)}")]
         public async Task<IActionResult> Index()
         {
             var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             var user = await _employeeService.GetByEmail(email);
 
             var employees = await _employeeService.GetAll();
-            if (User.IsInRole("MANAGER"))
+            if (User.IsInRole($"{nameof(RoleType.MANAGER)}"))
             {
                 employees = employees.Where(x => x.DepartmentId == user.DepartmentId);
             }
 
-            if (User.IsInRole("EMPLOYEE"))
+            if (User.IsInRole($"{nameof(RoleType.EMPLOYEE)}"))
             {
                 employees = employees.Where(x => x.Email == email);
             }
 
             return View(employees);
         }
-
-        [Authorize(Roles = "HR ADMIN, MANAGER, EMPLOYEE")]
+        
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}, {nameof(RoleType.MANAGER)}, {nameof(RoleType.EMPLOYEE)}")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null || !id.HasValue)
@@ -52,7 +52,7 @@ namespace HumanCapitalManagement.Controllers
             var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             var user = await _employeeService.GetByEmail(email);
 
-            if (User.IsInRole("EMPLOYEE"))
+            if (User.IsInRole($"{nameof(RoleType.EMPLOYEE)}"))
             {
                 if (id != user.Id)
                 {
@@ -67,7 +67,7 @@ namespace HumanCapitalManagement.Controllers
                 return NotFound();
             }
             
-            if (User.IsInRole("MANAGER"))
+            if (User.IsInRole($"{nameof(RoleType.MANAGER)}"))
             {
                 if (employee.DepartmentId != user.DepartmentId)
                 {
@@ -77,8 +77,8 @@ namespace HumanCapitalManagement.Controllers
 
             return View(employee);
         }
-
-        [Authorize(Roles = "HR ADMIN")]
+        
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}")]
         public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.GetAll();
@@ -90,7 +90,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR ADMIN")]
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}")]
         public async Task<IActionResult> Create(CreateEmployeeInput employeeInput)
         {
             if (!ModelState.IsValid)
@@ -106,8 +106,8 @@ namespace HumanCapitalManagement.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        [Authorize(Roles = "HR ADMIN, MANAGER")]
+        
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}, {nameof(RoleType.MANAGER)}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id is null || !id.HasValue)
@@ -124,7 +124,7 @@ namespace HumanCapitalManagement.Controllers
             var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             var user = await _employeeService.GetByEmail(email);
             
-            if (User.IsInRole("MANAGER"))
+            if (User.IsInRole($"{nameof(RoleType.MANAGER)}"))
             {
                 if (employee.DepartmentId != user.DepartmentId)
                 {
@@ -151,7 +151,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR ADMIN,MANAGER")]
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)},{nameof(RoleType.MANAGER)}")]
         public async Task<IActionResult> Edit(UpdateEmployeeInput employeeInput)
         {
             if (!ModelState.IsValid)
@@ -165,7 +165,7 @@ namespace HumanCapitalManagement.Controllers
             var email = User.Claims.First(x => x.Type == ClaimTypes.Email).Value;
             var user = await _employeeService.GetByEmail(email);
             
-            if (User.IsInRole("MANAGER"))
+            if (User.IsInRole($"{nameof(RoleType.MANAGER)}"))
             {
                 if (employeeInput.DepartmentId != user.DepartmentId)
                 {
@@ -178,7 +178,7 @@ namespace HumanCapitalManagement.Controllers
             return RedirectToAction(nameof(Index));
         }
         
-        [Authorize(Roles = "HR ADMIN")]
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null || !id.HasValue)
@@ -197,7 +197,7 @@ namespace HumanCapitalManagement.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR ADMIN")]
+        [Authorize(Roles = $"{nameof(RoleType.HR_ADMIN)}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _employeeService.DeleteEmployee(id);

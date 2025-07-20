@@ -1,4 +1,6 @@
-﻿namespace HumanCapitalManagement.Models.ViewModels;
+﻿using HumanCapitalManagement.Data;
+
+namespace HumanCapitalManagement.Models.ViewModels;
     
 public class EmployeeViewModel
 {
@@ -18,5 +20,5 @@ public class EmployeeViewModel
     
     public string DepartmentName { get; set; }
     
-    public string Role { get; set; }
+    public RoleType Role { get; set; }
 }
