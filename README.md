@@ -20,13 +20,13 @@ A web application for managing human capital in an organization – includes use
 
 ## Features
 
-- ✅ User registration and login (ASP.NET Identity)
-- ✅ Role-based authorization (Employee, Manager, HR Admin)
-- ✅ CRUD for Employees and Departments
-- ✅ Razor Pages layout with role-specific access
-- ✅ Secure Logout
-- ✅ Dockerized deployment
-- ✅ Unit Testing for Account actions
+-  User registration and login (ASP.NET Identity)
+-  Role-based authorization (Employee, Manager, HR Admin)
+-  CRUD for Employees and Departments
+-  Razor Pages layout with role-specific access
+-  Secure Logout
+-  Dockerized deployment
+-  Unit Testing for Account actions
 
 ---
 
