@@ -103,5 +103,5 @@ docker run -d -p 5140:80 human-capital-management
 
 ## Notes
 
-Login/Register UI is integrated into the layout (_LoginPartial.cshtml)
+Login/Register UI is integrated into the layout (_LoginPartial.cshtml)  
 Links to /Employees and /Departments are visible only to logged-in users
