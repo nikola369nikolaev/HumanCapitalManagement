@@ -150,4 +150,20 @@ interactions without requiring a full database server.
 
 Login/Register UI is integrated into the **layout** (_LoginPartial.cshtml)  
 Links to **/Employees** and **/Departments** are visible only to logged-in users  
-Login
+
+```bash
+
+HR Admin account login details:
+email: hr.admin@example.com
+pass: Hr.admin123!
+
+Manager account login details:
+email: manager@example.com
+pass: Manager123!
+
+Employee account login details:
+This will be a valid employee login if the HR Admin created it with this email, and the password is the one shown.
+email: georgi.hristov@gmail.com
+pass: Employee123!
+
+```
