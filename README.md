@@ -149,4 +149,5 @@ interactions without requiring a full database server.
 ## Notes
 
 Login/Register UI is integrated into the **layout** (_LoginPartial.cshtml)  
-Links to **/Employees** and **/Departments** are visible only to logged-in users
+Links to **/Employees** and **/Departments** are visible only to logged-in users  
+Login
