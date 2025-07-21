@@ -75,7 +75,7 @@ HumanCapitalManagement.Tests/
 ```bash
 
 # Clone the repository
-git clone https://github.com/nikola369nikolaev/human-capital-management.git
+git clone https://github.com/nikola369nikolaev/HumanCapitalManagement.git
 cd human-capital-management
 
 # Restore dependencies
