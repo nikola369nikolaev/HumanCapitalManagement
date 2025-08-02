@@ -10,7 +10,7 @@ namespace HumanCapitalManagement.Services
 
         Task<IEnumerable<EmployeeViewModel>> GetAll();
 
-        Task<Employee?> GetById(int id);
+        Task<EmployeeViewModel?> GetById(int id);
         
         Task<Employee?> GetByEmail(string email);
 

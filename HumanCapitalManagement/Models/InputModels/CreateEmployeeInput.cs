@@ -25,5 +25,12 @@ namespace HumanCapitalManagement.Models.InputModels
 
         [Required]
         public int DepartmentId { get; set; }
+        
+        [Required]
+        public int CountryId { get; set; }
+        
+        [StringLength(50)]
+        [Iban]
+        public string IBAN { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using HumanCapitalManagement.Data;
@@ -12,6 +13,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IAesEncryptionService, AesEncryptionService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -20,7 +23,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>() 
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
@@ -35,7 +38,7 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    
+
     app.UseHsts();
 }
 
@@ -57,6 +60,15 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
     ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbContext.Database.MigrateAsync();
+    
+    var countries = File.ReadAllText("countries.json");
+    var json = JsonSerializer.Deserialize<CountriesSeed>(countries, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+    if (json != null && !dbContext.Countries.Any())
+    {
+        dbContext.AddRange(json.Seed);
+        await dbContext.SaveChangesAsync();
+    }
 
     string[] roles = { nameof(RoleType.EMPLOYEE), $"{nameof(RoleType.MANAGER)}", $"{nameof(RoleType.HR_ADMIN)}" };
 
@@ -67,8 +79,8 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-    
-    if (!dbContext.Departments.Any(x=>x.Name == "IT"))
+
+    if (!dbContext.Departments.Any(x => x.Name == "IT"))
     {
         dbContext.Departments.Add(new Department() { Name = "IT" });
     }
@@ -84,7 +96,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     await dbContext.SaveChangesAsync();
-    
+
     var adminEmail = "hr.admin@example.com";
     var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -106,8 +118,9 @@ using (var scope = app.Services.CreateScope())
         {
             adminUser = await userManager.FindByEmailAsync(adminEmail);
             await userManager.AddToRoleAsync(adminUser, $"{nameof(RoleType.HR_ADMIN)}");
-            
+
             var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "HR");
+            var country = await dbContext.Countries.FirstOrDefaultAsync(x => x.Code == "US");
             dbContext.Employees.Add(new Employee
             {
                 FirstName = "admin",
@@ -115,7 +128,9 @@ using (var scope = app.Services.CreateScope())
                 Email = adminEmail,
                 JobTitle = "admin",
                 Salary = 0,
-                DepartmentId = department.Id
+                DepartmentId = department.Id,
+                CountryId = country.Id,
+                IBAN = ""
             });
             await dbContext.SaveChangesAsync();
         }
@@ -125,7 +140,7 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine(result.ToString());
         }
     }
-    
+
     var managerEmail = "manager@example.com";
     var managerUser = await userManager.FindByEmailAsync(managerEmail);
 
@@ -148,6 +163,7 @@ using (var scope = app.Services.CreateScope())
             managerUser = await userManager.FindByEmailAsync(managerEmail);
             await userManager.AddToRoleAsync(managerUser, $"{nameof(RoleType.MANAGER)}");
             var department = await dbContext.Departments.FirstOrDefaultAsync(x => x.Name == "IT");
+            var country = await dbContext.Countries.FirstOrDefaultAsync(x => x.Code == "US");
             dbContext.Employees.Add(new Employee
             {
                 FirstName = "manager",
@@ -155,7 +171,9 @@ using (var scope = app.Services.CreateScope())
                 Email = managerEmail,
                 JobTitle = "manager",
                 Salary = 0,
-                DepartmentId = department.Id
+                DepartmentId = department.Id,
+                CountryId = country.Id,
+                IBAN = ""
             });
             await dbContext.SaveChangesAsync();
         }
@@ -168,3 +186,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+
+class CountriesSeed
+{
+    public List<Country> Seed { get; set; }
+}

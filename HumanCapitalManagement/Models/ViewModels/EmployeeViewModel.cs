@@ -18,7 +18,14 @@ public class EmployeeViewModel
     
     public int DepartmentId { get; set; }
     
+    public int CountryId { get; set; }
+    
+    public string CountryName { get; set; }
     public string DepartmentName { get; set; }
     
     public RoleType Role { get; set; }
+    
+    public int WorkingDays { get; set; }
+    
+    public string IBAN { get; set; }
 }

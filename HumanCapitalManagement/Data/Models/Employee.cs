@@ -32,4 +32,13 @@ public class Employee
 
     [ForeignKey("DepartmentId")]
     public Department Department { get; set; }
+    
+    [Required]
+    public int CountryId { get; set; }
+
+    [ForeignKey("CountryId")]
+    public Country Country { get; set; }
+    
+    [StringLength(50)]
+    public string IBAN { get; set; }
 }

@@ -12,11 +12,13 @@ namespace HumanCapitalManagement.Controllers
     {
         private readonly IEmployeeService _employeeService; 
         private readonly IDepartmentService _departmentService;
+        private readonly ICountryService _countryService;
 
-        public EmployeesController(IEmployeeService employeeService, IDepartmentService departmentService)
+        public EmployeesController(IEmployeeService employeeService, IDepartmentService departmentService, ICountryService countryService)
         {
             _employeeService = employeeService;
             _departmentService = departmentService;
+            _countryService = countryService;
         }
 
         [Authorize(Roles = $"{nameof(RoleType.EMPLOYEE)}, {nameof(RoleType.MANAGER)}, {nameof(RoleType.HR_ADMIN)}")]
@@ -82,6 +84,10 @@ namespace HumanCapitalManagement.Controllers
             var departments = await _departmentService.GetAll();
 
             ViewData["DepartmentId"] = new SelectList(departments, "Id", "Name");
+            
+            var countries = await _countryService.GetAll();
+            
+            ViewData["CountryId"] = new SelectList(countries, "Id", "Name");
 
             return View();
         }
@@ -96,6 +102,10 @@ namespace HumanCapitalManagement.Controllers
                 var departments = await _departmentService.GetAll();
 
                 ViewData["DepartmentId"] = new SelectList(departments, "Id", "Name", employeeInput.DepartmentId);
+                
+                var countries = await _countryService.GetAll();
+            
+                ViewData["CountryId"] = new SelectList(countries, "Id", "Name");
 
                 return View(employeeInput);
             }
@@ -132,6 +142,10 @@ namespace HumanCapitalManagement.Controllers
 
             var departments = await _departmentService.GetAll();
             ViewData["DepartmentId"] = new SelectList(departments, "Id", "Name", employee.DepartmentId);
+            
+            var countries = await _countryService.GetAll();
+            
+            ViewData["CountryId"] = new SelectList(countries, "Id", "Name");
 
             var updateEmployeeInput = new UpdateEmployeeInput
             {
@@ -141,7 +155,9 @@ namespace HumanCapitalManagement.Controllers
                 Email = employee.Email,
                 JobTitle = employee.JobTitle,
                 Salary = employee.Salary,
-                DepartmentId = employee.DepartmentId
+                DepartmentId = employee.DepartmentId,
+                CountryId = employee.CountryId,
+                IBAN = employee.IBAN,
             };
 
             return View(updateEmployeeInput);
@@ -156,6 +172,10 @@ namespace HumanCapitalManagement.Controllers
             {
                 var departments = await _departmentService.GetAll();
                 ViewData["DepartmentId"] = new SelectList(departments, "Id", "Name", employeeInput.DepartmentId);
+                
+                var countries = await _countryService.GetAll();
+            
+                ViewData["CountryId"] = new SelectList(countries, "Id", "Name");
 
                 return View(employeeInput);
             }
