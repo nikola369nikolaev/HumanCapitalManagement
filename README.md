@@ -15,6 +15,7 @@ A web application for managing human capital in an organization – includes use
 - [Docker Support](#docker-support)
 - [Testing](#testing)
 - [Notes](#notes)
+- [Additional Features](#aditional-features)
 
 ---
 
