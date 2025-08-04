@@ -168,6 +168,7 @@ email: georgi.hristov@gmail.com
 pass: Employee123!
 
 ```
+
 ## Additional Features
 
 ### 1. Integration with Working Days API
