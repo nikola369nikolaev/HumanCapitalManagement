@@ -162,6 +162,8 @@ namespace HumanCapitalManagement.Services
             {
                 throw new ArgumentNullException($"Employee with ID {employeeInput.Id} not found.");
             }
+            
+            var user = await _userManager.FindByEmailAsync(employee.Email);
 
             employee.FirstName = employeeInput.FirstName;
             employee.LastName = employeeInput.LastName;
@@ -174,6 +176,12 @@ namespace HumanCapitalManagement.Services
 
             _context.Employees.Update(employee);
             await _context.SaveChangesAsync();
+            
+            user.UserName = employeeInput.Email;
+            user.Email = employeeInput.Email;
+            user.NormalizedEmail = employeeInput.Email;
+            user.NormalizedUserName = employeeInput.Email;
+            await _userManager.UpdateAsync(user);
         }
     }
 }
