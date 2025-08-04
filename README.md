@@ -167,3 +167,30 @@ email: georgi.hristov@gmail.com
 pass: Employee123!
 
 ```
+## Additional Features
+
+### 1. Integration with Working Days API
+
+The project integrates with the [API Ninjas Working Days API](https://api-ninjas.com/api/working-days) to retrieve the number of working days for an employee.
+
+- **Employee Model Extension**  
+  A `Country` field has been added to each employee.
+
+- **UI Visualization**  
+  The employee profile view displays:
+
+### 2. IBAN Field for Employees
+
+- **Model Extension & Encryption**  
+An `IBAN` field has been added to the employee model.  
+IBAN values are stored **encrypted** in the database to ensure data privacy and compliance.
+
+- **UI Integration**  
+IBAN is shown on the employee profile page and can be entered/edited in the employee creation and update forms.
+
+- **Validation**  
+The IBAN is validated using:
+- Format check (Regex)
+- Checksum verification
+
+If the IBAN is invalid, a meaningful validation message is displayed.
