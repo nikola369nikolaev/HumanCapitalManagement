@@ -221,8 +221,19 @@ namespace HumanCapitalManagement.Tests.Services
             dbContext.Departments.Add(new Department { Id = 1, Name = "IT" });
             dbContext.Countries.Add(new Country { Id = 1, Name = "USA", Code = "US" });
             await dbContext.SaveChangesAsync();
+            
+            var mockUserManager = new Mock<UserManager<IdentityUser>>(
+                Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null);
 
-            var service = new EmployeeService(dbContext, null!, _mockConfig.Object, _mockAesEncryptionService.Object);
+            mockUserManager
+                .Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(new IdentityUser());
+
+            mockUserManager
+                .Setup(x => x.GetRolesAsync(It.IsAny<IdentityUser>()))
+                .ReturnsAsync(new List<string> { $"{nameof(RoleType.EMPLOYEE)}" });
+
+            var service = new EmployeeService(dbContext, mockUserManager.Object, _mockConfig.Object, _mockAesEncryptionService.Object);
 
             var input = new UpdateEmployeeInput
             {
