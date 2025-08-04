@@ -173,7 +173,7 @@ pass: Employee123!
 
 ### 1. Integration with Working Days API
 
-The project integrates with the [API Ninjas Working Days API](https://api-ninjas.com/api/working-days) to retrieve the number of working days for an employee.
+The project integrates with the [API Ninjas Working Days API]([https://api-ninjas.com/api/working-days](https://api-ninjas.com/api/workingdays)) to retrieve the number of working days for an employee.
 
 - **Employee Model Extension**  
   A `Country` field has been added to each employee.
